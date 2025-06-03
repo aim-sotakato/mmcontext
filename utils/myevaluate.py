@@ -19,9 +19,56 @@ def confusionmatrix(answer, predict, n_classes, args):
     plt.yticks(fontsize=10) 
     plt.ylabel("Ground truth", fontsize=14)
     plt.xlabel("Predicted label", fontsize=14)
-    plt.title("Imbalanced CIFAR10 (Ratio={:2d})".format(int(1/args.ratio)), fontsize=14)
-    plt.savefig("{}/{}/ConfusionMatrix.png".format(args.out, args.ratio))
+    #plt.title("AIM mini (Ratio={:2d})".format(int(1/args.ratio)), fontsize=14)
+    plt.title("AIM mini dataset", fontsize=14)
+    plt.savefig("{}/fold_{}/ConfusionMatrix.png".format(args.out, args.fold))
     plt.close()
+
+    return mat
+
+def f1_from_multiclass_confusion_matrix(cm):
+    cm = np.array(cm)
+    n_classes = cm.shape[0]
+    
+    precision_list = []
+    recall_list = []
+    f1_list = []
+    support_list = []  # 各クラスの正解数（= 実際の件数）
+
+    for i in range(n_classes):
+        tp = cm[i, i]
+        fp = cm[:, i].sum() - tp
+        fn = cm[i, :].sum() - tp
+        support = cm[i, :].sum()
+
+        precision = tp / (tp + fp) if (tp + fp) else 0.0
+        recall = tp / (tp + fn) if (tp + fn) else 0.0
+        f1 = 2 * precision * recall / (precision + recall) if (precision + recall) else 0.0
+
+        precision_list.append(precision)
+        recall_list.append(recall)
+        f1_list.append(f1)
+        support_list.append(support)
+
+    support_sum = sum(support_list)
+
+    macro_f1 = np.mean(f1_list)
+    weighted_f1 = np.average(f1_list, weights=support_list)
+
+    return {"per_class_f1": f1_list,
+            "macro_f1": macro_f1,
+            "weighted_f1": weighted_f1,
+            "per_class_precision": precision_list,
+            "per_class_recall": recall_list}
+
+def F1_score(answer, predict, n_classes, args):
+    label = list(range(n_classes))
+
+    mat = confusion_matrix(answer, predict, labels=label)
+    
+    results = f1_from_multiclass_confusion_matrix(mat)
+    
+    return results
 
 
 

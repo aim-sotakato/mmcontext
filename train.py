@@ -176,10 +176,10 @@ if __name__ == '__main__':
 
     #dataset = Dataset.get(dataset_id=args.data_id)
     dataset = Dataset.get(dataset_id=args.data_id)
-    dataset_path = dataset.get_default_storage_location().replace("file://", "")
-    args.data_path = dataset_path
+    dataset_path = dataset.uri.replace("file://", "")
 
-    print("Using dataset at:", args.data_path)
+    print("Using dataset path from URI:", dataset_path)
+    args.data_path = dataset_path
 
     ### save dir ###
     if not os.path.exists("{}".format(args.out)):

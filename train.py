@@ -175,7 +175,12 @@ if __name__ == '__main__':
 
 
     #dataset = Dataset.get(dataset_id=args.data_id)
-    Dataset.get(dataset_id=args.data_id).get_mutable_local_copy("screening_mmcontext", overwrite=True)
+    dataset = Dataset.get(dataset_id=args.data_id)
+    local_path = dataset.get_mutable_local_copy(dataset_name='screening_mmcontext',
+                                                overwrite=True,  # 既存ファイルも上書き
+                                                )
+    args.data_path = local_path
+    #Dataset.get(dataset_id=args.data_id).get_mutable_local_copy("screening_mmcontext", overwrite=True)
     #dataset_path = dataset.get_local_copy()
     #args.data_path = dataset_path
 

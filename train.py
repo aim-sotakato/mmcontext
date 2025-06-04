@@ -176,7 +176,7 @@ if __name__ == '__main__':
 
     #dataset = Dataset.get(dataset_id=args.data_id)
     #dataset = Dataset.get(dataset_id=args.data_id)
-    Dataset.get(dataset_id=args.dataset_id).get_mutable_local_copy("screening_mmcontext", overwrite=True)
+    Dataset.get(dataset_id=args.data_id).get_mutable_local_copy("screening_mmcontext", overwrite=True)
 
     ### save dir ###
     if not os.path.exists("{}".format(args.out)):

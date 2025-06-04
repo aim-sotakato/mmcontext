@@ -144,9 +144,21 @@ if __name__ == '__main__':
     parser.add_argument('--weight_rule', type=str, default='None', help='CBReweight or IBReweight')
     parser.add_argument('--weight_scheduler', type=str, default='None', help='DRW')
     parser.add_argument('--augmentation', type=str, default='None', help='Mixup or CutMix')
-    args = parser.parse_args()
-    gpu_flag = args.gpu
+    #args = parser.parse_args()
+    args, unknown = parser.parse_known_args()
 
+
+    ####### ClearML task initialization ########
+    task = Task.init(project_name='screening_mmcontext', 
+                     task_name='screening_classification_sample',
+                     )
+    task.set_base_docker("harbor.dev.ai-ms.com/screening_mmcontext/mmcontext_image:latest")
+    task.execute_remotely(queue_name="a100x1a", exit_process=True)
+
+    args = task.connect(args)
+
+
+    gpu_flag = args.gpu
 
     ### plot ###
     print("[Experimental conditions]")
@@ -161,15 +173,6 @@ if __name__ == '__main__':
     print("")
 
 
-    ####### ClearML task initialization ########
-    task = Task.init(project_name='screening_mmcontext', 
-                     task_name='screening_classification_sample',
-                     )
-    task.set_base_docker("harbor.dev.ai-ms.com/screening_mmcontext/mmcontext_image:latest")
-    task.execute_remotely(queue_name="a100x1a", exit_process=True)
-
-    args = task.connect(args)
-    
     dataset = Dataset.get(dataset_id=args.data_id)
     dataset_path = dataset.get_local_copy()
     args.data_path = dataset_path

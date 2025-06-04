@@ -180,7 +180,7 @@ if __name__ == '__main__':
     #                                            overwrite=True,  # 既存ファイルも上書き
     #                                            )
     #args.data_path = local_path
-    args.data_path = dataset.get_mutable_local_copy(dataset_name="screening_mmcontext", overwrite=True)
+    args.data_path = dataset.get_mutable_local_copy(overwrite=True)
     #Dataset.get(dataset_id=args.data_id).get_mutable_local_copy("screening_mmcontext", overwrite=True)
     #dataset_path = dataset.get_local_copy()
     #args.data_path = dataset_path

@@ -34,6 +34,14 @@ from timm.scheduler import CosineLRScheduler
 from clearml import Task, Dataset
 
 
+####### ClearML task initialization ########
+task = Task.init(project_name='screening_mmcontext', 
+                 task_name='screening_classification_sample',
+                 )
+task.set_base_docker("harbor.dev.ai-ms.com/screening_mmcontext/mmcontext_docker_image:latest")
+task.execute_remotely(queue_name="a100x1a", exit_process=True)
+
+
 ##### train ######
 def train(epoch, criterion):
     model.train()
@@ -146,14 +154,6 @@ if __name__ == '__main__':
     parser.add_argument('--augmentation', type=str, default='None', help='Mixup or CutMix')
     #args = parser.parse_args()
     args, unknown = parser.parse_known_args()
-
-
-    ####### ClearML task initialization ########
-    task = Task.init(project_name='screening_mmcontext', 
-                     task_name='screening_classification_sample',
-                     )
-    task.set_base_docker("harbor.dev.ai-ms.com/screening_mmcontext/mmcontext_image:latest")
-    task.execute_remotely(queue_name="a100x1a", exit_process=True)
 
     args = task.connect(args)
 

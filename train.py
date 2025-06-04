@@ -39,7 +39,7 @@ task = Task.init(project_name='screening_mmcontext',
                  task_name='screening_classification_sample',
                  )
 task.set_base_docker("harbor.dev.ai-ms.com/screening_mmcontext/mmcontext_docker_image:latest")
-task.execute_remotely(queue_name="a100x1a", exit_process=True)
+task.execute_remotely(queue_name="a100x1a", exit_process=False)
 
 
 ##### train ######

@@ -22,7 +22,13 @@ from utils.myscheduler import adjust_learning_rate
 from utils.myaug import mix_data, mix_criterion
 from utils.myevaluate import F1_score
 
-import timm 
+try:
+    import timm
+except ImportError:
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "timm"])
+    import timm
+
+#import timm 
 from timm.scheduler import CosineLRScheduler
 
 from clearml import Task, Dataset
@@ -155,17 +161,18 @@ if __name__ == '__main__':
     print("")
 
 
-    ### ClearML task initialization
-    task = Task.init(project_name=args.project, 
-                     task_name=args.task_name)
+    ####### ClearML task initialization ########
+    task = Task.init(project_name='screening_mmcontext', 
+                     task_name='screening_classification_sample',
+                     )
     task.set_base_docker("harbor.dev.ai-ms.com/screening_mmcontext/mmcontext_image:latest")
     task.execute_remotely(queue_name="a100x1a", exit_process=True)
-    #task.set_base_docker("")
-    #task.set_repo("")  # 空文字を明示的に入れるとリポジトリ指定しないことになる場合あり
+
+    args = task.connect(args)
+    
     dataset = Dataset.get(dataset_id=args.data_id)
     dataset_path = dataset.get_local_copy()
     args.data_path = dataset_path
-
 
     ### save dir ###
     if not os.path.exists("{}".format(args.out)):

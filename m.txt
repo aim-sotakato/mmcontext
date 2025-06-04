@@ -1,0 +1,3 @@
+sh run.sh
+clearml-agent daemon --queue a100x1a --docker harbor.dev.ai-ms.com/screening_mmcontext/mmcontext_docker_image:latest
+

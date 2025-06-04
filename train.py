@@ -35,12 +35,13 @@ from clearml import Task, Dataset
 
 
 ####### ClearML task initialization ########
-task = Task.init(project_name='screening_mmcontext', 
-                 task_name='screening_classification_sample',
-                 )
-task.set_base_docker("harbor.dev.ai-ms.com/screening_mmcontext/mmcontext_docker_image:latest")
-task.execute_remotely(queue_name="a100x1a", exit_process=False)
-
+#task = Task.init(project_name='screening_mmcontext', 
+#                 task_name='screening_classification_sample',
+#                 )
+#task.set_base_docker("harbor.dev.ai-ms.com/screening_mmcontext/mmcontext_docker_image:latest")
+#task.execute_remotely(queue_name="a100x1a", exit_process=False)
+task = Task.current_task()
+task.get_logger()
 
 ##### train ######
 def train(epoch, criterion):
@@ -173,9 +174,10 @@ if __name__ == '__main__':
     print("")
 
 
-    dataset = Dataset.get(dataset_id=args.data_id)
-    dataset_path = dataset.get_local_copy()
-    args.data_path = dataset_path
+    #dataset = Dataset.get(dataset_id=args.data_id)
+    Dataset.get(dataset_id=args.data_id).get_mutable_local_copy("screening_mmcontext", overwrite=True)
+    #dataset_path = dataset.get_local_copy()
+    #args.data_path = dataset_path
 
     ### save dir ###
     if not os.path.exists("{}".format(args.out)):
